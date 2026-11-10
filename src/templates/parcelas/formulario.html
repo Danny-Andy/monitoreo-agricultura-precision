@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h2>Datos de la parcela</h2>
+<form method="post">
+    <label>Nombre</label>
+    <input type="text" name="nombre" value="{{ parcela.get('nombre', '') }}">
+    <label>Ubicación</label>
+    <input type="text" name="ubicacion" value="{{ parcela.get('ubicacion', '') }}">
+    <label>Área (hectáreas)</label>
+    <input type="text" name="area" value="{{ parcela.get('area', parcela.get('area_hectareas', '')) }}">
+    <label>Cultivo</label>
+    <input type="text" name="cultivo" value="{{ parcela.get('cultivo', '') }}">
+    <button type="submit">Guardar</button>
+    <a href="{{ url_for('parcelas.listar') }}">Cancelar</a>
+</form>
+{% endblock %}

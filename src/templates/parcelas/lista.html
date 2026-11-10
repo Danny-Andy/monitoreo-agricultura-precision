@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h2>Parcelas</h2>
+<a class="boton" href="{{ url_for('parcelas.crear') }}">Nueva parcela</a>
+<br><br>
+{% if parcelas %}
+<table>
+    <tr>
+        <th>ID</th><th>Nombre</th><th>Ubicación</th>
+        <th>Área (ha)</th><th>Cultivo</th><th>Acciones</th>
+    </tr>
+    {% for p in parcelas %}
+    <tr>
+        <td>{{ p.id }}</td>
+        <td>{{ p.nombre }}</td>
+        <td>{{ p.ubicacion }}</td>
+        <td>{{ p.area_hectareas }}</td>
+        <td>{{ p.cultivo }}</td>
+        <td>
+            <a href="{{ url_for('parcelas.editar', id_parcela=p.id) }}">Editar</a>
+            <form action="{{ url_for('parcelas.eliminar', id_parcela=p.id) }}"
+                  method="post" style="display:inline"
+                  onsubmit="return confirm('¿Eliminar esta parcela?');">
+                <button type="submit">Eliminar</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No hay parcelas registradas.</p>
+{% endif %}
+{% endblock %}
