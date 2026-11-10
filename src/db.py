@@ -23,3 +23,16 @@ def crear_tablas():
             )
             """
         )
+        conexion.execute(
+            """
+            CREATE TABLE IF NOT EXISTS sensores (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                codigo TEXT NOT NULL UNIQUE,
+                tipo TEXT NOT NULL,
+                unidad TEXT NOT NULL,
+                activo INTEGER NOT NULL DEFAULT 1,
+                id_parcela INTEGER NOT NULL,
+                FOREIGN KEY (id_parcela) REFERENCES parcelas(id)
+            )
+            """
+        )
