@@ -2,30 +2,100 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Monitoreo Agrícola</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block titulo %}Parcelas · Monitoreo agrícola{% endblock %}</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; background: #f4f7f2; }
-        nav { background: #2e7d32; padding: 12px 24px; }
-        nav a { color: white; margin-right: 20px; text-decoration: none; font-weight: bold; }
-        main { max-width: 800px; margin: 24px auto; padding: 0 16px; }
-        table { width: 100%; border-collapse: collapse; background: white; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-        th { background: #c8e6c9; }
-        .ok { background: #c8e6c9; padding: 8px; margin-bottom: 8px; }
-        .error { background: #ffcdd2; padding: 8px; margin-bottom: 8px; }
-        input { display: block; margin-bottom: 12px; padding: 6px; width: 100%; }
-        button, .boton { background: #2e7d32; color: white; border: none;
-            padding: 8px 14px; cursor: pointer; text-decoration: none; }
+        :root {
+            color-scheme: light;
+            --verde: #246b3b;
+            --verde-oscuro: #174a2b;
+            --fondo: #f4f7f2;
+            --borde: #dce5db;
+            --texto: #203126;
+            --suave: #617064;
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: var(--fondo); color: var(--texto);
+            font-family: "Segoe UI", Arial, sans-serif; }
+        nav { background: var(--verde-oscuro); padding: 15px max(20px, calc((100% - 1060px) / 2)); }
+        .nav-links { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+        nav a { color: white; text-decoration: none; font-weight: 700; }
+        nav a:hover { text-decoration: underline; }
+        main { max-width: 1060px; margin: 30px auto; padding: 0 20px 40px; }
+        h1 { margin: 0 0 8px; font-size: clamp(1.6rem, 4vw, 2.2rem); }
+        h2 { margin-top: 0; }
+        .subtitulo { color: var(--suave); margin: 0 0 24px; }
+        .barra, .acciones { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .barra { justify-content: space-between; margin: 22px 0 18px; }
+        .busqueda { display: flex; gap: 8px; flex: 1 1 320px; max-width: 560px; }
+        input { width: 100%; min-width: 0; padding: 10px 12px; border: 1px solid #b9c8b8;
+            border-radius: 7px; background: white; color: var(--texto); font: inherit; }
+        input:focus { outline: 3px solid #b8dfc1; border-color: var(--verde); }
+        label { display: block; margin: 16px 0 6px; font-weight: 650; }
+        .boton, button { display: inline-flex; justify-content: center; align-items: center;
+            border: 0; border-radius: 7px; padding: 10px 14px; background: var(--verde);
+            color: white; font: inherit; font-weight: 650; text-decoration: none; cursor: pointer; }
+        .boton:hover, button:hover { background: var(--verde-oscuro); }
+        .secundario { background: #e7eee6; color: var(--texto); }
+        .secundario:hover { background: #d7e3d5; }
+        .peligro { background: #a73535; }
+        .peligro:hover { background: #812626; }
+        .resumen { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .tarjeta, .panel { border: 1px solid var(--borde); border-radius: 10px;
+            background: white; box-shadow: 0 2px 8px #19331b0a; }
+        .tarjeta { padding: 16px 18px; }
+        .tarjeta span { display: block; color: var(--suave); font-size: .9rem; }
+        .tarjeta strong { display: block; margin-top: 5px; font-size: 1.45rem; }
+        .tabla-contenedor { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 680px; }
+        th, td { border-bottom: 1px solid var(--borde); padding: 13px 14px; text-align: left; }
+        th { background: #edf4eb; color: #354b38; font-size: .9rem; }
+        tbody tr:hover { background: #f8fbf7; }
+        td form { display: inline; }
+        .panel { padding: 22px; }
+        .formulario { max-width: 650px; }
+        .ayuda { color: var(--suave); font-size: .9rem; margin: 6px 0 0; }
+        .mensaje { border-radius: 7px; padding: 12px 14px; margin: 0 0 10px; }
+        .ok { background: #e0f2e3; color: #1e5c2d; }
+        .error { background: #ffeded; color: #842c2c; }
+        .vacio { text-align: center; padding: 36px 18px; color: var(--suave); }
+        .acciones-formulario { margin-top: 22px; }
+        .lectura-principal { display: flex; justify-content: space-between; align-items: start;
+            gap: 20px; flex-wrap: wrap; }
+        .lectura-valor { font-size: clamp(2rem, 6vw, 3.2rem); font-weight: 750; color: var(--verde-oscuro); }
+        .lectura-detalles { color: var(--suave); line-height: 1.7; }
+        .filtros { display: grid; grid-template-columns: repeat(4, minmax(140px, 1fr));
+            align-items: end; gap: 12px; }
+        .filtros label { margin-top: 0; }
+        .filtros input, .filtros select, select { width: 100%; padding: 10px 12px;
+            border: 1px solid #b9c8b8; border-radius: 7px; background: white;
+            color: var(--texto); font: inherit; }
+        .campo { margin-bottom: 8px; }
+        @media (max-width: 620px) {
+            main { margin-top: 22px; }
+            .resumen { grid-template-columns: 1fr; }
+            .barra { align-items: stretch; }
+            .busqueda { max-width: none; }
+            .barra > .boton { width: 100%; }
+            .panel { padding: 17px; }
+            .filtros { grid-template-columns: 1fr 1fr; }
+        }
     </style>
 </head>
 <body>
-    <nav>
-        <a href="{{ url_for('parcelas.listar') }}">Parcelas</a>
+    <nav aria-label="Navegación principal">
+        <div class="nav-links">
+            <a href="{{ url_for('parcelas.listar') }}">Monitoreo agrícola</a>
+            <a href="{{ url_for('parcelas.listar') }}">Parcelas</a>
+            <a href="{{ url_for('mediciones.historial') }}">Mediciones</a>
+            <a href="{{ url_for('mediciones.ultima') }}">Última medición</a>
+            <a href="{{ url_for('mediciones.registrar') }}">Registrar medición</a>
+        </div>
     </nav>
     <main>
         {% with mensajes = get_flashed_messages(with_categories=true) %}
             {% for categoria, mensaje in mensajes %}
-                <div class="{{ categoria }}">{{ mensaje }}</div>
+                <div class="mensaje {{ categoria }}" role="{{ 'alert' if categoria == 'error' else 'status' }}">{{ mensaje }}</div>
             {% endfor %}
         {% endwith %}
         {% block contenido %}{% endblock %}

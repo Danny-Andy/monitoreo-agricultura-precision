@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block titulo %}Registrar medición · Monitoreo agrícola{% endblock %}
+{% block contenido %}
+<h1>Registrar medición</h1>
+<p class="subtitulo">Guarda una lectura de sensor asociada a una parcela.</p>
+
+{% if parcelas %}
+<section class="panel formulario">
+    <form method="post" action="{{ url_for('mediciones.registrar') }}">
+        <label for="parcela_id">Parcela <span aria-hidden="true">*</span></label>
+        <select id="parcela_id" name="parcela_id" required>
+            <option value="">Selecciona una parcela</option>
+            {% for parcela in parcelas %}
+            <option value="{{ parcela.id }}" {% if medicion.get('parcela_id', '')|string == parcela.id|string %}selected{% endif %}>{{ parcela.nombre }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="sensor">Sensor o tipo de medición <span aria-hidden="true">*</span></label>
+        <input id="sensor" type="text" name="sensor" maxlength="80" required autofocus
+               placeholder="Ej.: Humedad del suelo"
+               value="{{ medicion.get('sensor', '') }}">
+
+        <label for="valor">Valor medido <span aria-hidden="true">*</span></label>
+        <input id="valor" type="number" name="valor" step="any" required
+               placeholder="Ej.: 36.5" value="{{ medicion.get('valor', '') }}">
+
+        <label for="unidad">Unidad <span aria-hidden="true">*</span></label>
+        <input id="unidad" type="text" name="unidad" maxlength="20" required
+               placeholder="Ej.: %, °C, pH, lux"
+               value="{{ medicion.get('unidad', '') }}">
+
+        <label for="fecha_medicion">Fecha y hora de la lectura <span aria-hidden="true">*</span></label>
+        <input id="fecha_medicion" type="datetime-local" name="fecha_medicion" required
+               value="{{ medicion.get('fecha_medicion', '') }}">
+
+        <label for="observacion">Observación</label>
+        <input id="observacion" type="text" name="observacion" maxlength="500"
+               placeholder="Dato opcional sobre la lectura"
+               value="{{ medicion.get('observacion', '') }}">
+
+        <div class="acciones acciones-formulario">
+            <button type="submit">Guardar medición</button>
+            <a class="boton secundario" href="{{ url_for('mediciones.historial') }}">Cancelar y volver</a>
+        </div>
+        <p class="ayuda">Los campos marcados con * son obligatorios.</p>
+    </form>
+</section>
+{% else %}
+<section class="panel vacio">
+    <strong>Primero necesitas registrar una parcela.</strong>
+    <p>Las mediciones deben quedar vinculadas a una parcela existente.</p>
+    <a class="boton" href="{{ url_for('parcelas.crear') }}">Registrar parcela</a>
+</section>
+{% endif %}
+{% endblock %}

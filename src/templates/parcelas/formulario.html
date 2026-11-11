@@ -1,16 +1,37 @@
 {% extends "base.html" %}
+{% block titulo %}{{ 'Editar' if modo == 'editar' else 'Nueva' }} parcela · Monitoreo agrícola{% endblock %}
 {% block contenido %}
-<h2>Datos de la parcela</h2>
-<form method="post">
-    <label>Nombre</label>
-    <input type="text" name="nombre" value="{{ parcela.get('nombre', '') }}">
-    <label>Ubicación</label>
-    <input type="text" name="ubicacion" value="{{ parcela.get('ubicacion', '') }}">
-    <label>Área (hectáreas)</label>
-    <input type="text" name="area" value="{{ parcela.get('area', parcela.get('area_hectareas', '')) }}">
-    <label>Cultivo</label>
-    <input type="text" name="cultivo" value="{{ parcela.get('cultivo', '') }}">
-    <button type="submit">Guardar</button>
-    <a href="{{ url_for('parcelas.listar') }}">Cancelar</a>
-</form>
+<h1>{{ 'Editar parcela' if modo == 'editar' else 'Registrar parcela' }}</h1>
+<p class="subtitulo">Completa los datos para mantener actualizado el registro agrícola.</p>
+
+<section class="panel formulario">
+    <form method="post" action="{{ url_for('parcelas.editar', id_parcela=id_parcela) if modo == 'editar' else url_for('parcelas.crear') }}">
+        <label for="nombre">Nombre de la parcela <span aria-hidden="true">*</span></label>
+        <input id="nombre" type="text" name="nombre" maxlength="100" required autofocus
+               autocomplete="off" placeholder="Ej.: Parcela Norte"
+               value="{{ parcela.get('nombre', '') }}">
+
+        <label for="ubicacion">Ubicación <span aria-hidden="true">*</span></label>
+        <input id="ubicacion" type="text" name="ubicacion" maxlength="200" required
+               placeholder="Sector, distrito o coordenadas"
+               value="{{ parcela.get('ubicacion', '') }}">
+
+        <label for="area">Área en hectáreas <span aria-hidden="true">*</span></label>
+        <input id="area" type="number" name="area" min="0.01" step="0.01" required
+               placeholder="Ej.: 2.50"
+               value="{{ parcela.get('area', parcela.get('area_hectareas', '')) }}">
+        <p class="ayuda">Ingresa un valor mayor que cero. Puedes usar hasta dos decimales.</p>
+
+        <label for="cultivo">Cultivo principal <span aria-hidden="true">*</span></label>
+        <input id="cultivo" type="text" name="cultivo" maxlength="100" required
+               placeholder="Ej.: Maíz"
+               value="{{ parcela.get('cultivo', '') }}">
+
+        <div class="acciones acciones-formulario">
+            <button type="submit">{{ 'Guardar cambios' if modo == 'editar' else 'Registrar parcela' }}</button>
+            <a class="boton secundario" href="{{ url_for('parcelas.listar') }}">Cancelar y volver</a>
+        </div>
+        <p class="ayuda">Los campos marcados con * son obligatorios.</p>
+    </form>
+</section>
 {% endblock %}

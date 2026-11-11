@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block titulo %}Historial de mediciones · Monitoreo agrícola{% endblock %}
+{% block contenido %}
+<h1>Mediciones</h1>
+<p class="subtitulo">Registra nuevas lecturas y consulta el historial de tus parcelas.</p>
+
+<section class="resumen" aria-label="Resumen de mediciones">
+    <article class="tarjeta"><span>Mediciones registradas</span><strong>{{ total }}</strong></article>
+    <article class="tarjeta">
+        <span>Última lectura</span>
+        {% if ultima_medicion %}
+        <strong>{{ ultima_medicion.valor }} {{ ultima_medicion.unidad }}</strong>
+        <span>{{ ultima_medicion.sensor }} · {{ ultima_medicion.fecha_medicion|replace('T', ' ') }}</span>
+        {% else %}<strong>Sin datos</strong>{% endif %}
+    </article>
+    <article class="tarjeta"><span>Acceso rápido</span>
+        <a class="boton secundario" href="{{ url_for('mediciones.ultima') }}">Consultar última medición</a>
+    </article>
+</section>
+
+<div class="barra">
+    <h2>Historial por fechas</h2>
+    <a class="boton" href="{{ url_for('mediciones.registrar') }}">＋ Registrar medición</a>
+</div>
+
+<section class="panel">
+    <form method="get" action="{{ url_for('mediciones.historial') }}">
+        <div class="filtros">
+            <div class="campo">
+                <label for="desde">Desde</label>
+                <input id="desde" type="date" name="desde" value="{{ desde }}">
+            </div>
+            <div class="campo">
+                <label for="hasta">Hasta</label>
+                <input id="hasta" type="date" name="hasta" value="{{ hasta }}">
+            </div>
+            <div class="campo">
+                <label for="parcela_id">Parcela</label>
+                <select id="parcela_id" name="parcela_id">
+                    <option value="">Todas las parcelas</option>
+                    {% for parcela in parcelas %}
+                    <option value="{{ parcela.id }}" {% if parcela_id|string == parcela.id|string %}selected{% endif %}>{{ parcela.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="acciones">
+                <button type="submit">Consultar historial</button>
+                <a class="boton secundario" href="{{ url_for('mediciones.historial') }}">Limpiar</a>
+            </div>
+        </div>
+    </form>
+</section>
+
+<section class="panel" style="margin-top: 16px">
+    {% if mediciones %}
+    <div class="tabla-contenedor">
+        <table>
+            <thead>
+                <tr><th scope="col">Fecha y hora</th><th scope="col">Parcela</th>
+                    <th scope="col">Sensor o medición</th><th scope="col">Valor</th>
+                    <th scope="col">Observación</th></tr>
+            </thead>
+            <tbody>
+                {% for medicion in mediciones %}
+                <tr>
+                    <td>{{ medicion.fecha_medicion|replace('T', ' ') }}</td>
+                    <td>{{ medicion.parcela_nombre }}</td>
+                    <td>{{ medicion.sensor }}</td>
+                    <td><strong>{{ medicion.valor }} {{ medicion.unidad }}</strong></td>
+                    <td>{{ medicion.observacion or '—' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% elif desde or hasta or parcela_id %}
+    <div class="vacio"><strong>No hay mediciones que coincidan con los filtros.</strong>
+        <p>Prueba con otro rango de fechas o selecciona otra parcela.</p></div>
+    {% else %}
+    <div class="vacio"><strong>Aún no hay mediciones registradas.</strong>
+        <p>Registra una lectura para que aparezca en el historial.</p>
+        <a class="boton" href="{{ url_for('mediciones.registrar') }}">Registrar primera medición</a></div>
+    {% endif %}
+</section>
+{% endblock %}

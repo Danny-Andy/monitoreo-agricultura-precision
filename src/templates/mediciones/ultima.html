@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block titulo %}Última medición · Monitoreo agrícola{% endblock %}
+{% block contenido %}
+<h1>Consultar última medición</h1>
+<p class="subtitulo">Revisa la lectura más reciente del sistema o de una parcela específica.</p>
+
+<section class="panel" style="margin-bottom: 16px">
+    <form method="get" action="{{ url_for('mediciones.ultima') }}" class="acciones">
+        <div class="campo" style="min-width: 250px; flex: 1">
+            <label for="parcela_id">Filtrar por parcela</label>
+            <select id="parcela_id" name="parcela_id">
+                <option value="">Todas las parcelas</option>
+                {% for parcela in parcelas %}
+                <option value="{{ parcela.id }}" {% if parcela_id|string == parcela.id|string %}selected{% endif %}>{{ parcela.nombre }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit">Consultar</button>
+        {% if parcela_id %}<a class="boton secundario" href="{{ url_for('mediciones.ultima') }}">Quitar filtro</a>{% endif %}
+    </form>
+</section>
+
+<section class="panel">
+    {% if medicion %}
+    <div class="lectura-principal">
+        <div>
+            <span class="subtitulo">{{ medicion.sensor }} · {{ medicion.parcela_nombre }}</span>
+            <div class="lectura-valor">{{ medicion.valor }} {{ medicion.unidad }}</div>
+            <div class="lectura-detalles">
+                <strong>Fecha y hora:</strong> {{ medicion.fecha_medicion|replace('T', ' ') }}<br>
+                <strong>Ubicación:</strong> {{ medicion.parcela_ubicacion }}<br>
+                {% if medicion.observacion %}<strong>Observación:</strong> {{ medicion.observacion }}{% endif %}
+            </div>
+        </div>
+        <a class="boton secundario" href="{{ url_for('mediciones.historial', parcela_id=parcela_id) if parcela_id else url_for('mediciones.historial') }}">Ver historial</a>
+    </div>
+    {% else %}
+    <div class="vacio"><strong>No hay mediciones registradas{% if parcela_id %} para esta parcela{% endif %}.</strong>
+        <p>Cuando registres una lectura, aparecerá aquí.</p>
+        <a class="boton" href="{{ url_for('mediciones.registrar') }}">Registrar medición</a></div>
+    {% endif %}
+</section>
+{% endblock %}
