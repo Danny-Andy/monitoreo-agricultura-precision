@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h2>Sensores</h2>
+<br>
+{% if sensores %}
+<table>
+    <tr>
+        <th>ID</th><th>Código</th><th>Tipo</th>
+        <th>Unidad</th><th>Parcela</th><th>Estado</th>
+    </tr>
+    {% for s in sensores %}
+    <tr>
+        <td>{{ s.id }}</td>
+        <td>{{ s.codigo }}</td>
+        <td>{{ s.tipo }}</td>
+        <td>{{ s.unidad }}</td>
+        <td>{{ s.parcela }}</td>
+        <td>{{ "Activo" if s.activo else "Inactivo" }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No hay sensores registrados.</p>
+{% endif %}
+{% endblock %}
