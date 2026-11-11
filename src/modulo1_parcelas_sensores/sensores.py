@@ -16,15 +16,26 @@ def obtener_parcelas():
 
 @sensores_bp.route("/")
 def listar():
-    with obtener_conexion() as conexion:
-        sensores = conexion.execute(
-            "SELECT s.id, s.codigo, s.tipo, s.unidad, s.activo, "
-            "p.nombre AS parcela "
-            "FROM sensores s JOIN parcelas p ON p.id = s.id_parcela "
-            "ORDER BY s.id"
-        ).fetchall()
-    return render_template("sensores/lista.html", sensores=sensores)
+    id_parcela = request.args.get("parcela", "")
+    consulta = (
+        "SELECT s.id, s.codigo, s.tipo, s.unidad, s.activo, "
+        "p.nombre AS parcela "
+        "FROM sensores s JOIN parcelas p ON p.id = s.id_parcela"
+    )
+    parametros = ()
+    if id_parcela:
+        consulta += " WHERE s.id_parcela = ?"
+        parametros = (id_parcela,)
+    consulta += " ORDER BY s.id"
 
+    with obtener_conexion() as conexion:
+        sensores = conexion.execute(consulta, parametros).fetchall()
+    return render_template(
+        "sensores/lista.html",
+        sensores=sensores,
+        parcelas=obtener_parcelas(),
+        id_parcela=id_parcela,
+    )
 
 @sensores_bp.route("/nuevo", methods=["GET", "POST"])
 def crear():

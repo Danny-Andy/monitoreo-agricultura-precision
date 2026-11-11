@@ -2,6 +2,16 @@
 {% block contenido %}
 <h2>Sensores</h2>
 <a class="boton" href="{{ url_for('sensores.crear') }}">Nuevo sensor</a>
+<form method="get" style="margin-top:12px">
+    <label>Filtrar por parcela</label>
+    <select name="parcela" style="padding:6px">
+        <option value="">Todas</option>
+        {% for p in parcelas %}
+        <option value="{{ p.id }}" {% if id_parcela|string == p.id|string %}selected{% endif %}>{{ p.nombre }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Filtrar</button>
+</form>
 <br><br>
 {% if sensores %}
 <table>
