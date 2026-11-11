@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% block contenido %}
 <h2>Sensores</h2>
-<br>
+<a class="boton" href="{{ url_for('sensores.crear') }}">Nuevo sensor</a>
+<br><br>
 {% if sensores %}
 <table>
     <tr>
