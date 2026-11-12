@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block titulo %}Alertas · Monitoreo agrícola{% endblock %}
+
+{% block contenido %}
+<h1>Historial de Alertas</h1>
+<p class="subtitulo">Registro de mediciones que salieron de los umbrales permitidos.</p>
+
+<div class="panel tabla-contenedor">
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Mensaje</th>
+            <th>Nivel</th>
+            <th>Fecha y Hora</th>
+            <th>Estado</th>
+            <th>Acción</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for alerta in alertas %}
+        <tr>
+            <td>{{ alerta.id }}</td>
+            <td>{{ alerta.mensaje }}</td>
+            <td>
+                <span style="color: #a73535; font-weight: bold;">{{ alerta.nivel }}</span>
+            </td>
+            <td>{{ alerta.fecha_hora }}</td>
+            <td>{{ "Leída" if alerta.leida else "No leída" }}</td>
+            <td>
+                {% if not alerta.leida %}
+                <a href="{{ url_for('alertas.marcar_leida', id=alerta.id) }}" class="boton secundario" style="padding: 5px 10px; font-size: 0.9rem;">Marcar leída</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="6" class="vacio">¡Todo en orden! No hay alertas registradas.</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
