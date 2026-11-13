@@ -12,7 +12,30 @@ def obtener_parcelas():
         return conexion.execute(
             "SELECT id, nombre FROM parcelas ORDER BY nombre"
         ).fetchall()
+    
+def validar_sensor(codigo, tipo, id_parcela):
+    """Devuelve la lista de errores. Si está vacía, los datos son válidos."""
+    errores = []
+    if not codigo:
+        errores.append("El código es obligatorio.")
+    else:
+        with obtener_conexion() as conexion:
+            repetido = conexion.execute(
+                "SELECT id FROM sensores WHERE codigo = ?", (codigo,)
+            ).fetchone()
+        if repetido:
+            errores.append("Ya existe un sensor con ese código.")
 
+    if tipo not in UNIDADES:
+        errores.append("El tipo debe ser humedad, temperatura o nivel_agua.")
+
+    with obtener_conexion() as conexion:
+        parcela = conexion.execute(
+            "SELECT id FROM parcelas WHERE id = ?", (id_parcela,)
+        ).fetchone()
+    if parcela is None:
+        errores.append("La parcela seleccionada no existe.")
+    return errores
 
 @sensores_bp.route("/")
 def listar():
@@ -40,16 +63,26 @@ def listar():
 @sensores_bp.route("/nuevo", methods=["GET", "POST"])
 def crear():
     if request.method == "POST":
-        codigo = request.form["codigo"].strip()
-        tipo = request.form["tipo"]
-        id_parcela = request.form["id_parcela"]
-        unidad = UNIDADES[tipo]
+        codigo = request.form.get("codigo", "").strip()
+        tipo = request.form.get("tipo", "")
+        id_parcela = request.form.get("id_parcela", "")
+
+        errores = validar_sensor(codigo, tipo, id_parcela)
+        if errores:
+            for error in errores:
+                flash(error, "error")
+            return render_template(
+                "sensores/formulario.html",
+                sensor=dict(request.form),
+                parcelas=obtener_parcelas(),
+                tipos=list(UNIDADES),
+            )
 
         with obtener_conexion() as conexion:
             conexion.execute(
                 "INSERT INTO sensores (codigo, tipo, unidad, id_parcela) "
                 "VALUES (?, ?, ?, ?)",
-                (codigo, tipo, unidad, id_parcela),
+                (codigo, tipo, UNIDADES[tipo], id_parcela),
             )
         flash("Sensor registrado correctamente.", "ok")
         return redirect(url_for("sensores.listar"))
