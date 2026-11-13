@@ -60,3 +60,20 @@ def crear():
         parcelas=obtener_parcelas(),
         tipos=list(UNIDADES),
     )
+@sensores_bp.route("/<int:id_sensor>/estado", methods=["POST"])
+def cambiar_estado(id_sensor):
+    with obtener_conexion() as conexion:
+        sensor = conexion.execute(
+            "SELECT activo FROM sensores WHERE id = ?", (id_sensor,)
+        ).fetchone()
+        if sensor is None:
+            flash("El sensor no existe.", "error")
+            return redirect(url_for("sensores.listar"))
+
+        nuevo_estado = 0 if sensor["activo"] else 1
+        conexion.execute(
+            "UPDATE sensores SET activo = ? WHERE id = ?",
+            (nuevo_estado, id_sensor),
+        )
+    flash("Sensor activado." if nuevo_estado else "Sensor desactivado.", "ok")
+    return redirect(url_for("sensores.listar"))

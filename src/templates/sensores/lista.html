@@ -17,7 +17,7 @@
 <table>
     <tr>
         <th>ID</th><th>Código</th><th>Tipo</th>
-        <th>Unidad</th><th>Parcela</th><th>Estado</th>
+        <th>Unidad</th><th>Parcela</th><th>Estado</th><th>Acciones</th>
     </tr>
     {% for s in sensores %}
     <tr>
@@ -27,6 +27,12 @@
         <td>{{ s.unidad }}</td>
         <td>{{ s.parcela }}</td>
         <td>{{ "Activo" if s.activo else "Inactivo" }}</td>
+        <td>
+            <form action="{{ url_for('sensores.cambiar_estado', id_sensor=s.id) }}"
+                  method="post" style="display:inline">
+                <button type="submit">{{ "Desactivar" if s.activo else "Activar" }}</button>
+            </form>
+        </td>
     </tr>
     {% endfor %}
 </table>
