@@ -1,4 +1,4 @@
-import sqlite3
+﻿import sqlite3
 from contextlib import contextmanager
 from pathlib import Path
 
@@ -63,4 +63,30 @@ def crear_tablas():
         conexion.execute(
             "CREATE INDEX IF NOT EXISTS idx_mediciones_fecha "
             "ON mediciones(fecha_medicion DESC, id DESC)"
+        )
+        conexion.execute(
+            """
+            CREATE TABLE IF NOT EXISTS umbrales (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id_parcela INTEGER NOT NULL,
+                tipo_medida TEXT NOT NULL,
+                valor_minimo REAL NOT NULL,
+                valor_maximo REAL NOT NULL,
+                activo INTEGER NOT NULL DEFAULT 1,
+                FOREIGN KEY (id_parcela) REFERENCES parcelas(id) ON DELETE CASCADE
+            )
+            """
+        )
+        conexion.execute(
+            """
+            CREATE TABLE IF NOT EXISTS alertas (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id_umbral INTEGER NOT NULL,
+                mensaje TEXT NOT NULL,
+                nivel TEXT NOT NULL,
+                fecha_hora TEXT NOT NULL,
+                leida INTEGER NOT NULL DEFAULT 0,
+                FOREIGN KEY (id_umbral) REFERENCES umbrales(id) ON DELETE CASCADE
+            )
+            """
         )

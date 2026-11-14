@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block titulo %}Nuevo Umbral · Monitoreo agrícola{% endblock %}
+
+{% block contenido %}
+<h1>Registrar Nuevo Umbral</h1>
+<p class="subtitulo">Los valores mínimo y máximo definirán cuándo se genera una alerta.</p>
+
+<div class="panel formulario">
+    <form method="POST" action="{{ url_for('umbrales.crear') }}">
+
+        <div class="campo">
+            <label for="id_parcela">Parcela:</label>
+            <select name="id_parcela" id="id_parcela" required>
+                <option value="">Seleccione una parcela...</option>
+                {% for parcela in parcelas %}
+                <option value="{{ parcela.id }}">{{ parcela.nombre }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="campo">
+            <label for="tipo_medida">Tipo de Medida:</label>
+            <select name="tipo_medida" id="tipo_medida" required>
+                <option value="humedad">Humedad</option>
+                <option value="temperatura">Temperatura</option>
+                <option value="nivel_agua">Nivel de agua</option>
+            </select>
+        </div>
+
+        <div class="campo">
+            <label for="valor_minimo">Valor Mínimo:</label>
+            <input type="number" step="0.01" name="valor_minimo" id="valor_minimo" required>
+        </div>
+
+        <div class="campo">
+            <label for="valor_maximo">Valor Máximo:</label>
+            <input type="number" step="0.01" name="valor_maximo" id="valor_maximo" required>
+        </div>
+
+        <div class="acciones-formulario">
+            <button type="submit" class="boton">Guardar Umbral</button>
+            <a href="{{ url_for('umbrales.listar') }}" class="boton secundario">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

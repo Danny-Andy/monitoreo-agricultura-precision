@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block titulo %}Umbrales · Monitoreo agrícola{% endblock %}
+
+{% block contenido %}
+<h1>Umbrales de Medición</h1>
+<p class="subtitulo">Define los rangos mínimos y máximos permitidos para generar alertas.</p>
+
+<div class="barra">
+    <a href="{{ url_for('umbrales.crear') }}" class="boton">+ Nuevo Umbral</a>
+</div>
+
+<div class="panel tabla-contenedor">
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>ID Parcela</th>
+            <th>Tipo de Medida</th>
+            <th>Valor Mínimo</th>
+            <th>Valor Máximo</th>
+            <th>Estado</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for umbral in umbrales %}
+        <tr>
+            <td>{{ umbral.id }}</td>
+            <td>{{ umbral.id_parcela }}</td>
+            <td>{{ umbral.tipo_medida }}</td>
+            <td>{{ umbral.valor_minimo }}</td>
+            <td>{{ umbral.valor_maximo }}</td>
+            <td>{{ "Activo" if umbral.activo else "Inactivo" }}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="6" class="vacio">No hay umbrales registrados aún.</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
