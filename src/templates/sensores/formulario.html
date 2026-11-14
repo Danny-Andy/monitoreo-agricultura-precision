@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h2>Datos del sensor</h2>
+<form method="post">
+    <label>Código</label>
+    <input type="text" name="codigo" value="{{ sensor.get('codigo', '') }}">
+    <label>Tipo</label>
+    <select name="tipo" style="display:block; margin-bottom:12px; padding:6px; width:100%">
+        {% for t in tipos %}
+        <option value="{{ t }}" {% if sensor.get('tipo') == t %}selected{% endif %}>{{ t }}</option>
+        {% endfor %}
+    </select>
+    <label>Parcela</label>
+    <select name="id_parcela" style="display:block; margin-bottom:12px; padding:6px; width:100%">
+        {% for p in parcelas %}
+        <option value="{{ p.id }}" {% if sensor.get('id_parcela')|string == p.id|string %}selected{% endif %}>{{ p.nombre }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Guardar</button>
+    <a href="{{ url_for('sensores.listar') }}">Cancelar</a>
+</form>
+{% endblock %}

@@ -83,14 +83,10 @@
     </style>
 </head>
 <body>
-    <nav aria-label="Navegación principal">
-        <div class="nav-links">
-            <a href="{{ url_for('parcelas.listar') }}">Monitoreo agrícola</a>
-            <a href="{{ url_for('parcelas.listar') }}">Parcelas</a>
-            <a href="{{ url_for('mediciones.historial') }}">Mediciones</a>
-            <a href="{{ url_for('mediciones.ultima') }}">Última medición</a>
-            <a href="{{ url_for('mediciones.registrar') }}">Registrar medición</a>
-        </div>
+    <nav>
+        <a href="{{ url_for('parcelas.listar') }}">Parcelas</a>
+        <a href="{{ url_for('sensores.listar') }}">Sensores</a>
+        
     </nav>
     <main>
         {% with mensajes = get_flashed_messages(with_categories=true) %}
