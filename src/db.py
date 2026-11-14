@@ -46,6 +46,8 @@ def crear_tablas():
             )
             """
         )
+        conexion.execute(
+            """
             CREATE TABLE IF NOT EXISTS mediciones (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 parcela_id INTEGER NOT NULL,
