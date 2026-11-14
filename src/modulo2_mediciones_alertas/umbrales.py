@@ -35,3 +35,12 @@ def crear():
     with obtener_conexion() as conexion:
         parcelas = conexion.execute("SELECT id, nombre FROM parcelas").fetchall()
     return render_template("umbrales/formulario.html", parcelas=parcelas)
+    @umbrales_bp.route("/cambiar-estado/<int:id>")
+    def cambiar_estado(id):
+        with obtener_conexion() as conexion:
+            # Buscamos el estado actual
+            umbral = conexion.execute("SELECT activo FROM umbrales WHERE id = ?", (id,)).fetchone()
+            if umbral:
+                nuevo_estado = 0 if umbral["activo"] == 1 else 1
+                conexion.execute("UPDATE umbrales SET activo = ? WHERE id = ?", (nuevo_estado, id))
+        return redirect(url_for("umbrales.listar"))

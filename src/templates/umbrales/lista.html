@@ -30,7 +30,13 @@
             <td>{{ umbral.tipo_medida }}</td>
             <td>{{ umbral.valor_minimo }}</td>
             <td>{{ umbral.valor_maximo }}</td>
-            <td>{{ "Activo" if umbral.activo else "Inactivo" }}</td>
+            <td>{% if umbral.activo %}
+                <span style="color: green; font-weight: bold;">Activo</span> |
+                <a href="{{ url_for('umbrales.cambiar_estado', id=umbral.id) }}" style="color: red;">Desactivar</a>
+                {% else %}
+                <span style="color: gray; font-weight: bold;">Inactivo</span> |
+                <a href="{{ url_for('umbrales.cambiar_estado', id=umbral.id) }}" style="color: green;">Activar</a>
+                {% endif %}</td>
         </tr>
         {% else %}
         <tr>
