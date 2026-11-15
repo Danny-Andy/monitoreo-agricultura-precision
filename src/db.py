@@ -42,8 +42,7 @@ def crear_tablas():
                 unidad TEXT NOT NULL,
                 activo INTEGER NOT NULL DEFAULT 1,
                 id_parcela INTEGER NOT NULL,
-                FOREIGN KEY (id_parcela) REFERENCES parcelas(id)
-            )
+                FOREIGN KEY (id_parcela) REFERENCES parcelas(id) ON DELETE CASCADE            )
             """
         )
         conexion.execute(
