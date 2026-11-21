@@ -18,6 +18,8 @@ def validar_sensor(codigo, tipo, id_parcela):
     errores = []
     if not codigo:
         errores.append("El código es obligatorio.")
+    elif len(codigo) > 20:
+        errores.append("El código no puede tener más de 20 caracteres.")
     else:
         with obtener_conexion() as conexion:
             repetido = conexion.execute(
