@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request
+from flask import Blueprint, render_template, redirect, url_for, request, flash
 from datetime import datetime
 from db import obtener_conexion
 
@@ -43,4 +43,11 @@ def listar():
 def marcar_leida(id):
     with obtener_conexion() as conexion:
         conexion.execute("UPDATE alertas SET leida = 1 WHERE id = ?", (id,))
+    return redirect(url_for("alertas.listar"))
+
+@alertas_bp.route("/leer-todas")
+def leer_todas():
+    with obtener_conexion() as conexion:
+        conexion.execute("UPDATE alertas SET leida = 1 WHERE leida = 0")
+    flash("Todas las alertas han sido marcadas como leídas", "success")
     return redirect(url_for("alertas.listar"))

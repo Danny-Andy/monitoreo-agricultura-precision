@@ -36,7 +36,11 @@
                 {% else %}
                 <span style="color: gray; font-weight: bold;">Inactivo</span> |
                 <a href="{{ url_for('umbrales.cambiar_estado', id=umbral.id) }}" style="color: green;">Activar</a>
-                {% endif %}</td>
+                {% endif %}
+                |
+                <a href="{{ url_for('umbrales.eliminar', id=umbral.id) }}" style="color: #a73535;"
+                   onclick="return confirm('¿Estás seguro de que deseas eliminar este umbral?');">Eliminar</a></td>
+
         </tr>
         {% else %}
         <tr>
