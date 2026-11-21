@@ -17,9 +17,8 @@ def crear():
         valor_minimo = float(request.form["valor_minimo"])
         valor_maximo = float(request.form["valor_maximo"])
 
-        # Validación (SEC-13)
         if valor_minimo >= valor_maximo:
-            flash("El valor mínimo debe ser menor que el valor máximo", "error")
+            flash("Error: El valor mínimo debe ser menor que el valor máximo", "error")
             return redirect(url_for("umbrales.crear"))
 
         with obtener_conexion() as conexion:
@@ -31,16 +30,16 @@ def crear():
         flash("Umbral registrado correctamente", "success")
         return redirect(url_for("umbrales.listar"))
 
-    # Para el GET, necesitamos listar las parcelas para el select
-    with obtener_conexion() as conexion:
-        parcelas = conexion.execute("SELECT id, nombre FROM parcelas").fetchall()
-    return render_template("umbrales/formulario.html", parcelas=parcelas)
+        with obtener_conexion() as conexion:
+            parcelas = conexion.execute("SELECT id, nombre FROM parcelas").fetchall()
+        return render_template("umbrales/formulario.html", parcelas=parcelas)
+
     @umbrales_bp.route("/cambiar-estado/<int:id>")
     def cambiar_estado(id):
         with obtener_conexion() as conexion:
-            # Buscamos el estado actual
             umbral = conexion.execute("SELECT activo FROM umbrales WHERE id = ?", (id,)).fetchone()
             if umbral:
                 nuevo_estado = 0 if umbral["activo"] == 1 else 1
                 conexion.execute("UPDATE umbrales SET activo = ? WHERE id = ?", (nuevo_estado, id))
+               flash("Estado del umbral actualizado", "success")
         return redirect(url_for("umbrales.listar"))
