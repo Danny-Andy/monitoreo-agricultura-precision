@@ -63,7 +63,7 @@ def listar():
 @sensores_bp.route("/nuevo", methods=["GET", "POST"])
 def crear():
     if request.method == "POST":
-        codigo = request.form.get("codigo", "").strip()
+        codigo = request.form.get("codigo", "").strip().upper()
         tipo = request.form.get("tipo", "")
         id_parcela = request.form.get("id_parcela", "")
 
