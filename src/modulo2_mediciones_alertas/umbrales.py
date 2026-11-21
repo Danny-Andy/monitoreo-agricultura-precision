@@ -43,3 +43,9 @@ def cambiar_estado(id):
             conexion.execute("UPDATE umbrales SET activo = ? WHERE id = ?", (nuevo_estado, id))
     flash("Estado del umbral actualizado", "success")
     return redirect(url_for("umbrales.listar"))
+@umbrales_bp.route("/eliminar/<int:id>")
+def eliminar(id):
+    with obtener_conexion() as conexion:
+        conexion.execute("DELETE FROM umbrales WHERE id = ?", (id,))
+    flash("Umbral eliminado correctamente", "success")
+    return redirect(url_for("umbrales.listar"))

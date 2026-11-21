@@ -10,6 +10,7 @@
     <a href="{{ url_for('alertas.listar', filtro='todas') }}" class="boton {% if filtro != 'todas' %}secundario{% endif %}">Todas</a>
     <a href="{{ url_for('alertas.listar', filtro='no_leidas') }}" class="boton {% if filtro != 'no_leidas' %}secundario{% endif %}">No Leídas</a>
     <a href="{{ url_for('alertas.listar', filtro='leidas') }}" class="boton {% if filtro != 'leidas' %}secundario{% endif %}">Leídas</a>
+    <a href="{{ url_for('alertas.leer_todas') }}" class="boton" style="background-color: #246b3b;">Marcar todas como leídas</a>
 </div>
 <div class="panel tabla-contenedor">
     <table>
