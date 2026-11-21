@@ -6,6 +6,11 @@
 <h1>Historial de Alertas</h1>
 <p class="subtitulo">Registro de mediciones que salieron de los umbrales permitidos.</p>
 
+<div class="acciones" style="margin-bottom: 15px;">
+    <a href="{{ url_for('alertas.listar', filtro='todas') }}" class="boton {% if filtro != 'todas' %}secundario{% endif %}">Todas</a>
+    <a href="{{ url_for('alertas.listar', filtro='no_leidas') }}" class="boton {% if filtro != 'no_leidas' %}secundario{% endif %}">No Leídas</a>
+    <a href="{{ url_for('alertas.listar', filtro='leidas') }}" class="boton {% if filtro != 'leidas' %}secundario{% endif %}">Leídas</a>
+</div>
 <div class="panel tabla-contenedor">
     <table>
         <thead>
@@ -42,7 +47,7 @@
         </tbody>
     </table>
 </div>
-<div class="resume" style="margin-bottom: 25px;">
+<div class="resumen" style="margin-bottom: 25px;">
     <div class="tarjeta">
         <span>Total de alertas</span>
         <strong>{{ total }}</strong>
@@ -50,6 +55,10 @@
     <div class="tarjeta">
         <span>Alertas no leídas</span>
         <strong style="color: #d97706;">{{ no_leidas }}</strong>
+    </div>
+    <div class="tarjeta">
+        <span>Alertas Críticas</span>
+        <strong style="color: #a73535;">{{ criticas }}</strong>
     </div>
 </div>
 {% endblock %}
