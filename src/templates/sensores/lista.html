@@ -37,6 +37,9 @@
     {% endfor %}
 </table>
 {% else %}
+<p>No hay sensores registrados.</p>{% if id_parcela %}
+<p>Esta parcela no tiene sensores registrados.</p>
+{% else %}
 <p>No hay sensores registrados.</p>
-{% endif %}
+{% endif %}{% endif %}
 {% endblock %}
