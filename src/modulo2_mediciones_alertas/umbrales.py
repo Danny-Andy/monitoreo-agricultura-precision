@@ -30,16 +30,16 @@ def crear():
         flash("Umbral registrado correctamente", "success")
         return redirect(url_for("umbrales.listar"))
 
-        with obtener_conexion() as conexion:
-            parcelas = conexion.execute("SELECT id, nombre FROM parcelas").fetchall()
-        return render_template("umbrales/formulario.html", parcelas=parcelas)
+    with obtener_conexion() as conexion:
+        parcelas = conexion.execute("SELECT id, nombre FROM parcelas").fetchall()
+    return render_template("umbrales/formulario.html", parcelas=parcelas)
 
-    @umbrales_bp.route("/cambiar-estado/<int:id>")
-    def cambiar_estado(id):
-        with obtener_conexion() as conexion:
-            umbral = conexion.execute("SELECT activo FROM umbrales WHERE id = ?", (id,)).fetchone()
-            if umbral:
-                nuevo_estado = 0 if umbral["activo"] == 1 else 1
-                conexion.execute("UPDATE umbrales SET activo = ? WHERE id = ?", (nuevo_estado, id))
-               flash("Estado del umbral actualizado", "success")
-        return redirect(url_for("umbrales.listar"))
+@umbrales_bp.route("/cambiar-estado/<int:id>")
+def cambiar_estado(id):
+    with obtener_conexion() as conexion:
+        umbral = conexion.execute("SELECT activo FROM umbrales WHERE id = ?", (id,)).fetchone()
+        if umbral:
+            nuevo_estado = 0 if umbral["activo"] == 1 else 1
+            conexion.execute("UPDATE umbrales SET activo = ? WHERE id = ?", (nuevo_estado, id))
+    flash("Estado del umbral actualizado", "success")
+    return redirect(url_for("umbrales.listar"))

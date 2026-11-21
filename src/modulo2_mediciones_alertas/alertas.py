@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for
+from flask import Blueprint, render_template, redirect, url_for, request
 from datetime import datetime
 from db import obtener_conexion
 
@@ -24,14 +24,20 @@ def evaluar_medicion(id_parcela, tipo_medida, valor):
 
 @alertas_bp.route("/")
 def listar():
+    filtro = request.args.get("filtro", "todas")
     with obtener_conexion() as conexion:
-        alertas = conexion.execute("SELECT * FROM alertas ORDER BY fecha_hora DESC").fetchall()
+        if filtro == "no_leidas":
+            alertas = conexion.execute("SELECT * FROM alertas WHERE leida = 0 ORDER BY fecha_hora DESC").fetchall()
+        elif filtro == "leidas":
+            alertas = conexion.execute("SELECT * FROM alertas WHERE leida = 1 ORDER BY fecha_hora DESC").fetchall()
+        else:
+            alertas = conexion.execute("SELECT * FROM alertas ORDER BY fecha_hora DESC").fetchall()
 
         total_alertas = conexion.execute("SELECT COUNT(*) FROM alertas").fetchone()[0]
         no_leidas = conexion.execute("SELECT COUNT(*) FROM alertas WHERE leida=0").fetchone()[0]
         criticas = conexion.execute("SELECT COUNT(*) FROM alertas WHERE nivel='Crítico'").fetchone()[0]
 
-    return render_template("alertas/lista.html", alertas=alertas, total=total_alertas, no_leidas=no_leidas, criticas=criticas)
+    return render_template("alertas/lista.html", alertas=alertas, total=total_alertas, no_leidas=no_leidas, criticas=criticas, filtro=filtro)
 
 @alertas_bp.route("/leer/<int:id>")
 def marcar_leida(id):
