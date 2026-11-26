@@ -5,9 +5,16 @@ umbrales_bp = Blueprint("umbrales", __name__, url_prefix="/umbrales")
 
 @umbrales_bp.route("/")
 def listar():
+    buscar = request.args.get("buscar", "")
     with obtener_conexion() as conexion:
-        umbrales = conexion.execute("SELECT * FROM umbrales").fetchall()
-    return render_template("umbrales/lista.html", umbrales=umbrales)
+        if buscar:
+            umbrales = conexion.execute(
+                "SELECT * FROM umbrales WHERE tipo_medida LIKE ?",
+                ('%' + buscar + '%',)
+            ).fetchall()
+        else:
+            umbrales = conexion.execute("SELECT * FROM umbrales").fetchall()
+    return render_template("umbrales/lista.html", umbrales=umbrales, buscar=buscar)
 
 @umbrales_bp.route("/crear", methods=["GET", "POST"])
 def crear():
