@@ -1,45 +1,71 @@
 {% extends "base.html" %}
+{% block titulo %}Sensores · Monitoreo agrícola{% endblock %}
 {% block contenido %}
-<h2>Sensores</h2>
-<a class="boton" href="{{ url_for('sensores.crear') }}">Nuevo sensor</a>
-<form method="get" style="margin-top:12px">
-    <label>Filtrar por parcela</label>
-    <select name="parcela" style="padding:6px">
-        <option value="">Todas</option>
-        {% for p in parcelas %}
-        <option value="{{ p.id }}" {% if id_parcela|string == p.id|string %}selected{% endif %}>{{ p.nombre }}</option>
-        {% endfor %}
-    </select>
-    <button type="submit">Filtrar</button>
-</form>
-<br><br>
-{% if sensores %}
-<table>
-    <tr>
-        <th>ID</th><th>Código</th><th>Tipo</th>
-        <th>Unidad</th><th>Parcela</th><th>Estado</th><th>Acciones</th>
-    </tr>
-    {% for s in sensores %}
-    <tr>
-        <td>{{ s.id }}</td>
-        <td>{{ s.codigo }}</td>
-        <td>{{ s.tipo }}</td>
-        <td>{{ s.unidad }}</td>
-        <td>{{ s.parcela }}</td>
-        <td>{{ "Activo" if s.activo else "Inactivo" }}</td>
-        <td>
-            <form action="{{ url_for('sensores.cambiar_estado', id_sensor=s.id) }}"
-                  method="post" style="display:inline">
-                <button type="submit">{{ "Desactivar" if s.activo else "Activar" }}</button>
-            </form>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
-{% else %}
-<p>No hay sensores registrados.</p>{% if id_parcela %}
-<p>Esta parcela no tiene sensores registrados.</p>
-{% else %}
-<p>No hay sensores registrados.</p>
-{% endif %}{% endif %}
+<h1>Gestión de sensores</h1>
+<p class="subtitulo">Registra los sensores de cada parcela y controla si están activos.</p>
+
+<section class="resumen" aria-label="Resumen de sensores">
+    <article class="tarjeta"><span>Sensores</span><strong>{{ sensores|length }}</strong></article>
+    <article class="tarjeta"><span>Activos</span><strong>{{ sensores|selectattr('activo')|list|length }}</strong></article>
+    <article class="tarjeta"><span>Inactivos</span><strong>{{ sensores|rejectattr('activo')|list|length }}</strong></article>
+</section>
+
+<div class="barra">
+    <form class="busqueda" method="get" action="{{ url_for('sensores.listar') }}">
+        <select name="parcela" aria-label="Filtrar por parcela">
+            <option value="">Todas las parcelas</option>
+            {% for p in parcelas %}
+            <option value="{{ p.id }}" {% if id_parcela|string == p.id|string %}selected{% endif %}>{{ p.nombre }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Filtrar</button>
+        {% if id_parcela %}<a class="boton secundario" href="{{ url_for('sensores.listar') }}">Limpiar</a>{% endif %}
+    </form>
+    <a class="boton" href="{{ url_for('sensores.crear') }}">＋ Nuevo sensor</a>
+</div>
+
+<section class="panel">
+    {% if sensores %}
+    <div class="tabla-contenedor">
+        <table>
+            <thead>
+                <tr><th scope="col">ID</th><th scope="col">Código</th><th scope="col">Tipo</th>
+                    <th scope="col">Unidad</th><th scope="col">Parcela</th>
+                    <th scope="col">Estado</th><th scope="col">Acciones</th></tr>
+            </thead>
+            <tbody>
+                {% for s in sensores %}
+                <tr>
+                    <td>{{ s.id }}</td>
+                    <td><strong>{{ s.codigo }}</strong></td>
+                    <td>{{ s.tipo }}</td>
+                    <td>{{ s.unidad }}</td>
+                    <td>{{ s.parcela }}</td>
+                    <td>
+                        {% if s.activo %}
+                        <span style="color:#1e5c2d; font-weight:700;">● Activo</span>
+                        {% else %}
+                        <span style="color:#842c2c; font-weight:700;">● Inactivo</span>
+                        {% endif %}
+                    </td>
+                    <td class="acciones">
+                        <form action="{{ url_for('sensores.cambiar_estado', id_sensor=s.id) }}" method="post">
+                            <button type="submit" {% if s.activo %}class="secundario"{% endif %}>{{ "Desactivar" if s.activo else "Activar" }}</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% elif id_parcela %}
+    <div class="vacio"><strong>Esta parcela no tiene sensores registrados.</strong>
+        <p>Registra uno o revisa otra parcela.</p>
+        <a class="boton secundario" href="{{ url_for('sensores.listar') }}">Ver todos los sensores</a></div>
+    {% else %}
+    <div class="vacio"><strong>No hay sensores registrados.</strong>
+        <p>Registra el primero para comenzar.</p>
+        <a class="boton" href="{{ url_for('sensores.crear') }}">Registrar sensor</a></div>
+    {% endif %}
+</section>
 {% endblock %}
