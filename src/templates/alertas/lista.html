@@ -5,12 +5,26 @@
 {% block contenido %}
 <h1>Historial de Alertas</h1>
 <p class="subtitulo">Registro de mediciones que salieron de los umbrales permitidos.</p>
-
+<div class="resumen" style="margin-bottom: 25px;">
+    <div class="tarjeta">
+        <span>Total de alertas</span>
+        <strong>{{ total }}</strong>
+    </div>
+    <div class="tarjeta">
+        <span>Alertas no leídas</span>
+        <strong style="color: #d97706;">{{ no_leidas }}</strong>
+    </div>
+    <div class="tarjeta">
+        <span>Alertas Críticas</span>
+        <strong style="color: #a73535;">{{ criticas }}</strong>
+    </div>
+</div>
 <div class="acciones" style="margin-bottom: 15px;">
     <a href="{{ url_for('alertas.listar', filtro='todas') }}" class="boton {% if filtro != 'todas' %}secundario{% endif %}">Todas</a>
     <a href="{{ url_for('alertas.listar', filtro='no_leidas') }}" class="boton {% if filtro != 'no_leidas' %}secundario{% endif %}">No Leídas</a>
     <a href="{{ url_for('alertas.listar', filtro='leidas') }}" class="boton {% if filtro != 'leidas' %}secundario{% endif %}">Leídas</a>
     <a href="{{ url_for('alertas.leer_todas') }}" class="boton" style="background-color: #246b3b;">Marcar todas como leídas</a>
+    <a href="{{ url_for('alertas.limpiar_alertas') }}" class="boton" style="background-color: #a73535;" onclick="return confirm('¿Borrar todas las alertas que ya has leído?');">Limpiar leídas</a>
 </div>
 <div class="panel tabla-contenedor">
     <table>
@@ -47,23 +61,5 @@
         {% endfor %}
         </tbody>
     </table>
-</div>
-<div class="resumen" style="margin-bottom: 25px;">
-    <div class="tarjeta">
-        <span>Total de alertas</span>
-        <strong>{{ total }}</strong>
-    </div>
-    <div class="tarjeta">
-        <span>Alertas no leídas</span>
-        <strong style="color: #d97706;">{{ no_leidas }}</strong>
-    </div>
-    <div class="tarjeta">
-        <span>Alertas Críticas</span>
-        <strong style="color: #a73535;">{{ criticas }}</strong>
-    </div>
-</div>
-<div>
-    <a href="{{ url_for('alertas.leer_todas') }}" class="boton" style="background-color: #246b3b;">Marcar todas leídas</a>
-    <a href="{{ url_for('alertas.limpiar_alertas') }}" class="boton" style="background-color: #a73535;" onclick="return confirm('¿Borrar todas las alertas que ya has leído?');">Limpiar leídas</a>
 </div>
 {% endblock %}
