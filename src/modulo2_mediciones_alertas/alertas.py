@@ -51,3 +51,9 @@ def leer_todas():
         conexion.execute("UPDATE alertas SET leida = 1 WHERE leida = 0")
     flash("Todas las alertas han sido marcadas como leídas", "success")
     return redirect(url_for("alertas.listar"))
+@alertas_bp.route("/limpiar")
+def limpiar_alertas():
+    with obtener_conexion() as conexion:
+        conexion.execute("DELETE FROM alertas WHERE leida = 1")
+    flash("Historial de alertas leídas limpiado correctamente", "success")
+    return redirect(url_for("alertas.listar"))

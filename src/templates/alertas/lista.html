@@ -62,4 +62,8 @@
         <strong style="color: #a73535;">{{ criticas }}</strong>
     </div>
 </div>
+<div>
+    <a href="{{ url_for('alertas.leer_todas') }}" class="boton" style="background-color: #246b3b;">Marcar todas leídas</a>
+    <a href="{{ url_for('alertas.limpiar_alertas') }}" class="boton" style="background-color: #a73535;" onclick="return confirm('¿Borrar todas las alertas que ya has leído?');">Limpiar leídas</a>
+</div>
 {% endblock %}
