@@ -4,6 +4,7 @@ from datetime import date, datetime
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 
 from db import obtener_conexion
+from modulo2_mediciones_alertas.alertas import evaluar_medicion
 
 
 mediciones_bp = Blueprint("mediciones", __name__, url_prefix="/mediciones")
@@ -222,6 +223,8 @@ def registrar():
                 "VALUES (?, ?, ?, ?, ?, ?)",
                 (id_parcela, sensor, numero, unidad, fecha_medicion, observacion),
             )
+        tipo_medida_para_alerta = sensor.lower().strip()
+        evaluar_medicion(id_parcela, tipo_medida_para_alerta, numero)
         flash("Medición registrada correctamente.", "ok")
         return redirect(url_for("mediciones.historial"))
 
