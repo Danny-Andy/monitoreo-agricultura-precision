@@ -19,7 +19,7 @@ Python 3, Flask, SQLite, HTML y CSS.
 
 ### Requisitos
 - Python 3.10 o superior
-- Git
+- Gitñ
 
 ### Configuración
 ```powershell
