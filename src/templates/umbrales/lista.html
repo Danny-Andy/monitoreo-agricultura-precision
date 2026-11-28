@@ -7,6 +7,10 @@
 <p class="subtitulo">Define los rangos mínimos y máximos permitidos para generar alertas.</p>
 
 <div class="barra">
+    <form method="GET" action="{{ url_for('umbrales.listar') }}" class="busqueda">
+        <input type="text" name="buscar" placeholder="Buscar por tipo de medida (ej. humedad)..." value="{{ buscar }}">
+        <button type="submit" class="boton">Buscar</button>
+    </form>
     <a href="{{ url_for('umbrales.crear') }}" class="boton">+ Nuevo Umbral</a>
 </div>
 
@@ -36,7 +40,11 @@
                 {% else %}
                 <span style="color: gray; font-weight: bold;">Inactivo</span> |
                 <a href="{{ url_for('umbrales.cambiar_estado', id=umbral.id) }}" style="color: green;">Activar</a>
-                {% endif %}</td>
+                {% endif %}
+                |
+                <a href="{{ url_for('umbrales.eliminar', id=umbral.id) }}" style="color: #a73535;"
+                   onclick="return confirm('¿Estás seguro de que deseas eliminar este umbral?');">Eliminar</a></td>
+
         </tr>
         {% else %}
         <tr>
